@@ -56,7 +56,7 @@ void EcaParser::processParse()
     }
 
     // einzelne Messungen anlegen ----------------------------------------------
-    if(initStations(measureList, tgFileList))
+    if(initStations(measureList, tgFileList, rrFileList))
         return;
     emit signalStationNumber(QString::number(measureList->size()));
 
@@ -88,22 +88,19 @@ void EcaParser::processTestDates()
         Log::getInstance()->log(Log::FAILURE, "EcaParser: processTestDates: dateFrom > dateTo!");
         return;
     }
+    QString s = "DATE TG_SUCCESS RR_SUCCESS\n";
     while (dfrom.daysTo(QDate::currentDate()) >= dto.daysTo(QDate::currentDate())) {
         QString sdate;
         if(getDateString(dfrom, sdate))
             return;
 
         // ---------------------------------------------------------------------
-        if(tgPath == "" || rrPath == "") {
-            Log::getInstance()->log(Log::FAILURE, "EcaParser: processParse: Paths is empty!");
-            return;
-        }
-        if(dateMeasure == "") {
-            Log::getInstance()->log(Log::FAILURE, "EcaParser: processParse: Date is empty!");
+        if(testResultPath == "") {
+            Log::getInstance()->log(Log::FAILURE, "EcaParser::processTestDates: path is empty!");
             return;
         }
         if(cn == "") {
-            Log::getInstance()->log(Log::FAILURE, "EcaParser: processParse: Country is empty!");
+            Log::getInstance()->log(Log::FAILURE, "EcaParser: processTestDates: Country is empty!");
             return;
         }
 
@@ -114,22 +111,69 @@ void EcaParser::processTestDates()
         QStringList rrFileList = rrDir.entryList();
 
         if(!tgFileList.contains(STATIONS)) {
-            Log::getInstance()->log(Log::FAILURE, "EcaParser: processParse: stationx.txt in tgFileList not found!");
+            Log::getInstance()->log(Log::FAILURE, "EcaParser: processTestDates: stationx.txt in tgFileList not found!");
             return;
         }
         // einzelne Messungen anlegen -----------------------------------------
-        if(initStations(measureList, tgFileList))
+        if(initStations(measureList, tgFileList, rrFileList))
             return;
         emit signalStationNumber(QString::number(measureList->size()));
         // parse TG ------------------------------------------------------------
-        if(parseTg(measureList, tgFileList, dateMeasure))
+        if(parseTg(measureList, tgFileList, dfrom.toString(DATE_FORMAT)))
             return;
         // parse RR ------------------------------------------------------------
-
+        if(parseRr(measureList, rrFileList, dfrom.toString(DATE_FORMAT)))
+            return;
         // ---------------------------------------------------------------------
+        int tgCount = 0;
+        int rrCount = 0;
+        for (int i = 0; i < measureList->size(); ++i) {
+            if(measureList->at(i)->getTgq() != MISSING_I_Q)
+                tgCount++;
+            if(measureList->at(i)->getRrq() != MISSING_I_Q)
+                rrCount++;
+        }
 
+        s += dfrom.toString(DATE_FORMAT) + " " +
+             QString::number(tgCount) + " " +
+             QString::number(rrCount) + "\n";
+        if(!measureList->isEmpty()) {
+            qDeleteAll(measureList->begin(), measureList->end());
+            measureList->clear();
+        }
+        Log::getInstance()->log(Log::INFO, "EcaParser: processTestDates: Date " + dfrom.toString(DATE_FORMAT) + " parsed..");
         dfrom = dfrom.addDays(1);
     }
+    writeTestTatesResult(s);
+}
+
+int EcaParser::writeTestTatesResult(const QString &s)
+{
+    if(testResultPath == "") {
+        Log::getInstance()->log(Log::FAILURE, "EcaParser::writeTestTatesResult: path is empty!");
+        return -1;
+    }
+    bool time = true;
+    QString fileName1 = "testDatesResult";
+    QString fileName2 = measureList->getCn() + "_" + measureList->getDate().toString("yyyyMMdd");
+    QString sEnding = ".csv";
+    QString saveFile;
+    if(time) {
+        QDateTime date = QDateTime::currentDateTime();
+        saveFile = testResultPath + fileName1 + "_" + date.toString("yyyyMMdd_HHmmss") + "_" + fileName2 + sEnding;
+    } else
+        saveFile = testResultPath + fileName1 + "_" + fileName2 + sEnding;
+
+    QFile file(saveFile);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        Log::getInstance()->log(Log::ERROR, "EcaParser::writeTestTatesResult: can't open file!");
+        return -1;
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out << s;
+    Log::getInstance()->log(Log::INFO, "testDatesResult.csv saved...");
+    return 0;
 }
 
 int EcaParser::getDateString(const QDate &d, QString &s)
@@ -148,50 +192,61 @@ int EcaParser::getDateString(const QDate &d, QString &s)
     return 0;
 }
 
-int EcaParser::initStations(MeasureList *measureList, const QStringList &tgFileList)
+int EcaParser::initStations(MeasureList *measureList, const QStringList &tgFileList, const QStringList &rrFileList)
 {
-    QFile file(tgPath + tgFileList.at(tgFileList.indexOf(STATIONS)));
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        Log::getInstance()->log(Log::FAILURE, "EcaParser: initStations: can't open stations.txt!");
-        return -1;
-    }
-    QTextStream in(&file);
-    in.setCodec("UTF-8");
-    QStringList lines;
-    lines.append(in.readAll().split("\n"));
+    for (int var = 0; var < 2; ++var) {
+        QFile file;
+        if(var == 0) {
+            file.setFileName(tgPath + tgFileList.at(tgFileList.indexOf(STATIONS)));
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                Log::getInstance()->log(Log::FAILURE, "EcaParser: initStations: can't open stations.txt!");
+                return -1;
+            }
+        } else {
+            file.setFileName(rrPath + rrFileList.at(rrFileList.indexOf(STATIONS)));
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                Log::getInstance()->log(Log::FAILURE, "EcaParser: initStations: can't open stations.txt!");
+                return -1;
+            }
+        }
+        QTextStream in(&file);
+        in.setCodec("UTF-8");
+        QStringList lines;
+        lines.append(in.readAll().split("\n"));
 
-    if(lines.size() - 1 < STATIONS_OFFSET) {
-        Log::getInstance()->log(Log::FAILURE, "EcaParser: initStations: to few lines in station.txt!");
-        return -1;
-    }
-    QStringList line;
-    for (int i = STATIONS_OFFSET; i < lines.size(); ++i) {
-        line = lines.at(i).split(SPLIT_SIGN);
-        line.replaceInStrings(" ", "");                                         // remove spaces
-        if(line.size() == STA_NUMBER) {
-            if(line.at(STA_CN) == cn) {
-                if(!measureList->isExistByStaId(line.at(STA_STAID))) {
-                    Measure *m = new Measure();
-                    m->setStaId(line.at(STA_STAID));
-                    m->setStaName(line.at(STA_STANAME));
-                    double lat;
-                    double lon;
-                    if(getLatLonFromString(line.at(STA_LAT), lat))
-                        return -1;
-                    if(getLatLonFromString(line.at(STA_LAT), lon))
-                        return -1;
-                    m->setLat(lat);
-                    m->setLon(lon);
-                    bool b;
-                    line.at(STA_HIGH).toDouble(&b);
-                    if(!b) {
-                        Log::getInstance()->log(Log::ERROR, "EcaParser: initStations: string to double convert failed!");
-                        return -1;
+        if(lines.size() - 1 < STATIONS_OFFSET) {
+            Log::getInstance()->log(Log::FAILURE, "EcaParser: initStations: to few lines in station.txt!");
+            return -1;
+        }
+        QStringList line;
+        for (int i = STATIONS_OFFSET; i < lines.size(); ++i) {
+            line = lines.at(i).split(SPLIT_SIGN);
+            line.replaceInStrings(" ", "");                                         // remove spaces
+            if(line.size() == STA_NUMBER) {
+                if(line.at(STA_CN) == cn) {
+                    if(!measureList->isExistByStaId(line.at(STA_STAID))) {
+                        Measure *m = new Measure();
+                        m->setStaId(line.at(STA_STAID));
+                        m->setStaName(line.at(STA_STANAME));
+                        double lat;
+                        double lon;
+                        if(getLatLonFromString(line.at(STA_LAT), lat))
+                            return -1;
+                        if(getLatLonFromString(line.at(STA_LAT), lon))
+                            return -1;
+                        m->setLat(lat);
+                        m->setLon(lon);
+                        bool b;
+                        line.at(STA_HIGH).toDouble(&b);
+                        if(!b) {
+                            Log::getInstance()->log(Log::ERROR, "EcaParser: initStations: string to double convert failed!");
+                            return -1;
+                        }
+                        m->setHigh(line.at(STA_HIGH).toDouble());
+                        measureList->setCn(cn);
+                        measureList->setDate(QDate::fromString(dateMeasure, DATE_FORMAT));
+                        measureList->append(m);
                     }
-                    m->setHigh(line.at(STA_HIGH).toDouble());
-                    measureList->setCn(cn);
-                    measureList->setDate(QDate::fromString(dateMeasure, DATE_FORMAT));
-                    measureList->append(m);
                 }
             }
         }

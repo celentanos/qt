@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(eca, &EcaParser::signalStationNumber, ui->leStations, &QLineEdit::setText);
 //    connect(ui->butClearMeasureList, &QPushButton::clicked, eca, &EcaParser::slotClearStations);
 
+    ui->leTestResultPath->setText(QDir::currentPath() + "/");
     ui->leSavePath->setText(QDir::currentPath() + "/");
     connect(ui->butSaveCSV, &QPushButton::clicked, this, &MainWindow::slotSaveCSV);
 
@@ -141,7 +142,7 @@ void MainWindow::slotSaveCSV()
     QTextStream out(&file);
     out.setCodec("UTF-8");
     out << s;
-    Log::getInstance()->log(Log::INFO, ".csv saved...");
+    Log::getInstance()->log(Log::INFO, "measure.csv saved...");
 }
 
 int MainWindow::convertMeasureListToCSV(QString &s)
@@ -209,3 +210,12 @@ void MainWindow::on_butTestDates_clicked()
 }
 
 
+
+void MainWindow::on_leTestResultPath_textChanged(const QString &arg1)
+{
+    if(arg1.at(arg1.size() - 1) != '/') {
+        eca->setTestResultPath(arg1 + "/");
+        return;
+    }
+    eca->setTestResultPath(arg1);
+}

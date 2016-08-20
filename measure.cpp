@@ -3,8 +3,8 @@
 Measure::Measure()
 {
     staId = "";
-    souIdTg = "";
-    souIdRr = "";
+    souIdTg = MISSING_S_VAL;
+    souIdRr = MISSING_S_VAL;
     staName = "";
     cn = "";
     tg = MISSING_D_VAL;

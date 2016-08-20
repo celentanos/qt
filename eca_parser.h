@@ -66,8 +66,9 @@ private:
     void run();
     void processParse();
     void processTestDates();
+    int writeTestTatesResult(const QString &s);
     int getDateString(const QDate &d, QString &s);
-    int initStations(MeasureList *measureList, const QStringList &tgFileList);
+    int initStations(MeasureList *measureList, const QStringList &tgFileList, const QStringList &rrFileList);
     int parseTg(MeasureList *measureList, const QStringList &tgFileList, const QString &date);
     int parseRr(MeasureList *measureList, const QStringList &rrFileList, const QString &date);
 

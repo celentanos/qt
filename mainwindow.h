@@ -62,6 +62,7 @@ private slots:
     void on_butTestDates_clicked();
 
     void on_butSetTestResultPath_clicked();
+    void on_leTestResultPath_textChanged(const QString &arg1);
 };
 
 #endif // MAINWINDOW_H
