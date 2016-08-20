@@ -3,16 +3,17 @@
 Measure::Measure()
 {
     staId = "";
-    souId = "";
+    souIdTg = "";
+    souIdRr = "";
     staName = "";
     cn = "";
-    tg = 0.0;
-    tgq = 0;
-    rr = 0.0;
-    rrq = 0;
-    lat = 0.0;
-    lon = 0.0;
-    high = 0.0;
+    tg = MISSING_D_VAL;
+    tgq = MISSING_I_Q;
+    rr = MISSING_D_VAL;
+    rrq = MISSING_I_Q;
+    lat = MISSING_D_VAL;
+    lon = MISSING_D_VAL;
+    high = MISSING_D_VAL;
 }
 
 QString Measure::getStaName() const
@@ -85,16 +86,6 @@ void Measure::setStaId(const QString &value)
     staId = value;
 }
 
-QString Measure::getSouId() const
-{
-    return souId;
-}
-
-void Measure::setSouId(const QString &value)
-{
-    souId = value;
-}
-
 double Measure::getTg() const
 {
     return tg;
@@ -133,4 +124,24 @@ int Measure::getRrq() const
 void Measure::setRrq(int value)
 {
     rrq = value;
+}
+
+QString Measure::getSouIdTg() const
+{
+    return souIdTg;
+}
+
+void Measure::setSouIdTg(const QString &value)
+{
+    souIdTg = value;
+}
+
+QString Measure::getSouIdRr() const
+{
+    return souIdRr;
+}
+
+void Measure::setSouIdRr(const QString &value)
+{
+    souIdRr = value;
 }

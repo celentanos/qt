@@ -21,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->leDateFrom->setText("20150301");
     ui->leDateTo->setText("20150401");
 
-    ui->leTgPath->setText("/media/90GiB/ECA_blend_tg");
-    ui->leRrPath->setText("/media/90GiB/ECA_blend_rr");
+    ui->leTgPath->setText("/media/90GiB/ECA_blend_tg/");
+    ui->leRrPath->setText("/media/90GiB/ECA_blend_rr/");
     ui->leDate->setToolTip("Dateformat: YearMonthDay => 20081231");
     ui->leDate->setText("20160731");
     ui->leCn->setToolTip("Country-format: CN => DE");
@@ -163,15 +163,16 @@ int MainWindow::convertMeasureListToCSV(QString &s)
     s += "DATE " + measureList->getDate().toString("yyyyMMdd") + "\n";
     s += "\n\n\n\n\n\n\n";
 
-    s += "StationID SourseID StationName TG TG_Q High\n";
+    s += "STAID SOUIDTG SOUIDRR STANAME TG TGQ RR RRQ HIGH\n";
     for (int i = 0; i < measureList->size(); ++i) {
         s += measureList->at(i)->getStaId() + " " +
-             measureList->at(i)->getSouId() + " " +
+             measureList->at(i)->getSouIdTg() + " " +
+             measureList->at(i)->getSouIdRr() + " " +
              measureList->at(i)->getStaName() + " " +
              QString::number(measureList->at(i)->getTg()) + " " +
              QString::number(measureList->at(i)->getTgq()) + " " +
-//             QString::number(measureList->at(i)->getRr()) + " " +
-//             QString::number(measureList->at(i)->getRrq()) + " " +
+             QString::number(measureList->at(i)->getRr()) + " " +
+             QString::number(measureList->at(i)->getRrq()) + " " +
 //             QString::number(measureList->at(i)->getLat()) + " " +
 //             QString::number(measureList->at(i)->getLon()) + " " +
              QString::number(measureList->at(i)->getHigh()) + " " + "\n";

@@ -4,6 +4,11 @@
 #include <QString>
 #include <QDate>
 
+#define MISSING_I_Q         9
+#define MISSING_S_Q         "9"
+#define MISSING_D_VAL       -9999.0
+#define MISSING_S_VAL       "-9999"
+
 class Measure
 {
 public:
@@ -30,9 +35,6 @@ public:
     QString getStaId() const;
     void setStaId(const QString &value);
 
-    QString getSouId() const;
-    void setSouId(const QString &value);
-
     double getTg() const;
     void setTg(double value);
 
@@ -45,12 +47,19 @@ public:
     int getRrq() const;
     void setRrq(int value);
 
+    QString getSouIdTg() const;
+    void setSouIdTg(const QString &value);
+
+    QString getSouIdRr() const;
+    void setSouIdRr(const QString &value);
+
 private:
     QString staId;                  /// Station identifier
-    QString souId;                  /// Source identifier
     QString staName;                /// Station name
     QString cn;                     /// country code (ISO3116 countrycodes): DE, ...
     QDate date;
+    QString souIdTg;                /// Source-TG identifier
+    QString souIdRr;                /// Source-RR identifier
     double tg;                      /// Mean temperature
     int tgq;                        /// Temperature quality
     double rr;                      /// Precipitation

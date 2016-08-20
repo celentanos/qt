@@ -18,8 +18,7 @@
 #define RR_FILE                 "RR_STAID"
 #define TG_OFFSET               21              /// data-line-offset
 #define RR_OFFSET               21              /// data-line-offset
-#define MISSING_Q               "9"
-#define MISSING_VAL             "-9999"
+
 #define STAID_LENGTH            6
 
 class EcaParser : public QThread
@@ -70,6 +69,7 @@ private:
     int getDateString(const QDate &d, QString &s);
     int initStations(MeasureList *measureList, const QStringList &tgFileList);
     int parseTg(MeasureList *measureList, const QStringList &tgFileList, const QString &date);
+    int parseRr(MeasureList *measureList, const QStringList &rrFileList, const QString &date);
 
     QString getStationColumnName(STA e);
     int getLatLonFromString(QString s, double &d);
