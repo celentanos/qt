@@ -32,3 +32,6 @@ HEADERS  += mainwindow.h \
     log.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    README.md

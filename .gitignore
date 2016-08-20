@@ -2,3 +2,4 @@
 *.debug
 *.pro.user
 *.gitignore~
+/weatherDataParser*
