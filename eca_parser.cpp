@@ -197,18 +197,6 @@ int EcaParser::parseTg(MeasureList *measureList, const QStringList &tgFileList, 
     return 0;
 }
 
-int EcaParser::slotClearStations()
-{
-    if(!measureList) {
-        Log::getInstance()->log(Log::ERROR, "EcaParser: clearStations: measureList = 0!");
-        return -1;
-    }
-    qDeleteAll(measureList->begin(), measureList->end());
-    measureList->clear();
-    emit signalStationNumber(QString::number(measureList->size()));
-    return 0;
-}
-
 QString EcaParser::getStationColumnName(EcaParser::STA e)
 {
     switch (e) {

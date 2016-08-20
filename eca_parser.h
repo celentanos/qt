@@ -107,9 +107,6 @@ public:
 private:
     ECA_PROCESS proc;
 
-public slots:
-    int slotClearStations();
-
 signals:
     void signalStationNumber(QString);
 };

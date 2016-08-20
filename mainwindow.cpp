@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     eca = new EcaParser();
 
     connect(eca, &EcaParser::signalStationNumber, ui->leStations, &QLineEdit::setText);
-    connect(ui->butClearMeasureList, &QPushButton::clicked, eca, &EcaParser::slotClearStations);
+//    connect(ui->butClearMeasureList, &QPushButton::clicked, eca, &EcaParser::slotClearStations);
 
     ui->leSavePath->setText(QDir::currentPath() + "/");
     connect(ui->butSaveCSV, &QPushButton::clicked, this, &MainWindow::slotSaveCSV);
