@@ -1,5 +1,20 @@
 #include "eca_parser.h"
 
+QString EcaParser::getTestResultPath() const
+{
+    return testResultPath;
+}
+
+QString &EcaParser::getTestResultPathRef()
+{
+    return testResultPath;
+}
+
+void EcaParser::setTestResultPath(const QString &value)
+{
+    testResultPath = value;
+}
+
 void EcaParser::run()
 {
     switch (proc) {
@@ -71,6 +86,8 @@ void EcaParser::processTestDates()
         QString sdate;
         if(getDateString(dfrom, sdate))
             return;
+
+
 
         dfrom = dfrom.addDays(1);
     }
@@ -284,12 +301,13 @@ QString EcaParser::getTgPath() const
     return tgPath;
 }
 
+QString &EcaParser::getTgPathRef()
+{
+    return tgPath;
+}
+
 void EcaParser::setTgPath(const QString &value)
 {
-    if(value.at(value.size() - 1) != '/') {
-        tgPath = value + "/";
-        return;
-    }
     tgPath = value;
 }
 
@@ -298,12 +316,13 @@ QString EcaParser::getRrPath() const
     return rrPath;
 }
 
+QString &EcaParser::getRrPathRef()
+{
+    return rrPath;
+}
+
 void EcaParser::setRrPath(const QString &value)
 {
-    if(value.at(value.size() - 1) != '/') {
-        rrPath = value + "/";
-        return;
-    }
     rrPath = value;
 }
 

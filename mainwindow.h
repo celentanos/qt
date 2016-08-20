@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QTimer>
+#include <QLineEdit>
 
 #include "log.h"
 #include "eca_parser.h"
@@ -27,6 +28,7 @@ private:
     QString savePath;
 
     int convertMeasureListToCSV(QString &s);
+    void setPath(QString &path, QLineEdit &le);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -59,7 +61,7 @@ private slots:
 
     void on_butTestDates_clicked();
 
-
+    void on_butSetTestResultPath_clicked();
 };
 
 #endif // MAINWINDOW_H

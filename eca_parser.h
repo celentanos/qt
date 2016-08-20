@@ -60,6 +60,7 @@ private:
     QString cn;
     QString dateFrom;
     QString dateTo;
+    QString testResultPath;
 
     MeasureList *measureList;
 
@@ -87,9 +88,11 @@ public:
     int process(MeasureList *measureList, ECA_PROCESS p);
 
     QString getTgPath() const;
+    QString &getTgPathRef();
     void setTgPath(const QString &value);
 
     QString getRrPath() const;
+    QString &getRrPathRef();
     void setRrPath(const QString &value);
 
     QString getDateMeasure() const;
@@ -103,6 +106,10 @@ public:
 
     QString getDateTo() const;
     void setDateTo(const QString &value);
+
+    QString getTestResultPath() const;
+    QString &getTestResultPathRef();
+    void setTestResultPath(const QString &value);
 
 private:
     ECA_PROCESS proc;

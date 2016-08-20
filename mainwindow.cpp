@@ -47,17 +47,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_butSetTgPath_clicked()
 {
-    QString s = QFileDialog::getExistingDirectory(this, "Open Directory", "./", QFileDialog::ShowDirsOnly);
-    eca->setTgPath(s);
-    ui->leTgPath->setText(s);
-
+    setPath(eca->getTgPathRef(), *ui->leTgPath);
 }
 
 void MainWindow::on_butSetRrPath_clicked()
 {
-    QString s = QFileDialog::getExistingDirectory(this, "Open Directory", "./", QFileDialog::ShowDirsOnly);
-    eca->setRrPath(s);
-    ui->leRrPath->setText(s);
+    setPath(eca->getRrPathRef(), *ui->leRrPath);
 }
 
 void MainWindow::slotAddLogMsg(QString log)
@@ -99,14 +94,12 @@ void MainWindow::on_leRrPath_textChanged(const QString &arg1)
 
 void MainWindow::on_butSetSavePath_clicked()
 {
-    QString s = QFileDialog::getExistingDirectory(this, "Save Directory", "./", QFileDialog::ShowDirsOnly);
-    if(s.at(s.size() - 1) != '/') {
-        savePath = s + "/";
-        ui->leSavePath->setText(s);
-        return;
-    }
-    savePath = s;
-    ui->leSavePath->setText(s);
+    setPath(savePath, *ui->leSavePath);
+}
+
+void MainWindow::on_butSetTestResultPath_clicked()
+{
+    setPath(eca->getTestResultPathRef(), *ui->leTestResultPath);
 }
 
 void MainWindow::on_leSavePath_textChanged(const QString &arg1)
@@ -186,6 +179,19 @@ int MainWindow::convertMeasureListToCSV(QString &s)
     return 0;
 }
 
+void MainWindow::setPath(QString &path, QLineEdit &le)
+{
+    QString s = QFileDialog::getExistingDirectory(this, "Directory", "./", QFileDialog::ShowDirsOnly);
+    if(s.at(s.size() - 1) != '/') {
+        s += '/';
+        path = s;
+        le.setText(s);
+        return;
+    }
+    path = s;
+    le.setText(s);
+}
+
 void MainWindow::on_leDateFrom_textChanged(const QString &arg1)
 {
     eca->setDateFrom(arg1);
@@ -200,3 +206,5 @@ void MainWindow::on_butTestDates_clicked()
 {
     eca->process(measureList, EcaParser::ECA_P_TEST_DATES);
 }
+
+

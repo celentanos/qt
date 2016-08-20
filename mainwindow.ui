@@ -55,19 +55,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>TG: </string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QLineEdit" name="leTgPath"/>
             </item>
            </layout>
@@ -84,19 +71,6 @@
               </property>
               <property name="text">
                <string>set RR-Path</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>RR: </string>
               </property>
              </widget>
             </item>
@@ -253,6 +227,26 @@
               </layout>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <widget class="QPushButton" name="butSetTestResultPath">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>set Result-Path</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="leTestResultPath"/>
+               </item>
+              </layout>
+             </item>
+             <item>
               <widget class="QPushButton" name="butTestDates">
                <property name="text">
                 <string>test</string>
@@ -260,10 +254,6 @@
               </widget>
              </item>
             </layout>
-            <zorder>label_8</zorder>
-            <zorder>layoutWidget</zorder>
-            <zorder>layoutWidget_2</zorder>
-            <zorder>butTestDates</zorder>
            </widget>
           </item>
           <item>
