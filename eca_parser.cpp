@@ -155,7 +155,7 @@ int EcaParser::writeTestTatesResult(const QString &s)
     }
     bool time = true;
     QString fileName1 = "testDatesResult";
-    QString fileName2 = measureList->getCn() + "_" + measureList->getDate().toString("yyyyMMdd");
+    QString fileName2 = measureList->getCn() + "_" + dateFrom + "-" + dateTo;
     QString sEnding = ".csv";
     QString saveFile;
     if(time) {

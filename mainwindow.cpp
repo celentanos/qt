@@ -125,7 +125,7 @@ void MainWindow::slotSaveCSV()
 
     bool time = true;
     QString fileName1 = "measure";
-    QString fileName2 = measureList->getCn() + "_" + measureList->getDate().toString("yyyyMMdd");
+    QString fileName2 = measureList->getCn() + "_" + measureList->getDate().toString(DATE_FORMAT);
     QString sEnding = ".csv";
     QString saveFile;
     if(time) {
@@ -161,7 +161,7 @@ int MainWindow::convertMeasureListToCSV(QString &s)
     }
 
     s += "CN " + measureList->getCn() + "\n";
-    s += "DATE " + measureList->getDate().toString("yyyyMMdd") + "\n";
+    s += "DATE " + measureList->getDate().toString(DATE_FORMAT) + "\n";
     s += "\n\n\n\n\n\n\n";
 
     s += "STAID SOUIDTG SOUIDRR STANAME TG TGQ RR RRQ HIGH\n";
